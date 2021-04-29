@@ -1,9 +1,22 @@
 const database = require('../models')
+const Sequelize = require('sequelize')
+const Op = Sequelize.Op
 
 class TurmaController {
     static async pegaTodasAsTurmas(req, res) {
+        const { data_inicial, data_final } = req.query
+        const where = {}
+            // Primeiro if verifica se existe algum desses dois objetos e se existir vou no obj where
+            // criando uma propriedade chamada data_inicio (q é nome da coluna) 
+            // igual a outro obj vazio e se não tiver nada null
+        data_inicial || data_final ? where.data_inicio = {} : null
+            // agora levando os dados que vamos receber pra dentro do obj 
+            // e se for true p/ pra dentro de where
+        data_inicial ? where.data_inicio[Op.gte] = data_inicial : null
+            // mesma coisa com o data_final
+        data_final ? where.data_inicio[Op.lte] = data_final : null
         try {
-            const todasAsTurmas = await database.Turmas.findAll()
+            const todasAsTurmas = await database.Turmas.findAll({ where })
             return res.status(200).json(todasAsTurmas)
         } catch (error) {
             return res.status(500).json(error.message)
