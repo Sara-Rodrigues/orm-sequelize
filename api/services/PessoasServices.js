@@ -1,4 +1,5 @@
 const Services = require('./Services')
+const database = require('../models')
 
 // herdando do serviço principal
 class PessoasServices extends Services {
@@ -6,6 +7,16 @@ class PessoasServices extends Services {
             super('Pessoas')
         }
         // métodos específicos do controlador de Pessoas
+
+    async pegaRegistrosAtivos(where = {}) {
+        return database[this.nomeDoModelo].findAll({ where: {...where } })
+    }
+
+    async pegaTodosOsRegistros(where = {}) {
+        return database[this.nomeDoModelo]
+            .scope('todos')
+            .findAll({ where: {...where } })
+    }
 }
 
 module.exports = PessoasServices
